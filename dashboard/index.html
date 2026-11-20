@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — pre-token protocols ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="pulse" aria-hidden="true"></span><div><h1>TOKEN RADAR</h1><p class="tag">Pre-token protocols, ranked by what their token would be worth</p></div></div>
+  <div class="asof"><span id="asof">Snapshot —</span><span id="src"></span></div>
+</header>
+
+<section class="stats" id="stats" aria-label="Board summary"></section>
+
+<nav class="tabs" aria-label="Views">
+  <button data-view="board" class="active" type="button">Board</button>
+  <button data-view="method" type="button">How the value is worked out</button>
+  <button data-view="live" type="button">Already trading</button>
+</nav>
+
+<section id="view-board" class="view">
+  <div class="controls">
+    <input id="q" type="search" placeholder="Search a protocol…" aria-label="Search protocols">
+    <select id="cat" aria-label="Filter by category"><option value="">All categories</option></select>
+    <label class="chk"><input id="watch" type="checkbox"> Watchlist only</label>
+    <label class="chk"><input id="early" type="checkbox"> Early rows only</label>
+    <select id="sort" aria-label="Sort the board">
+      <option value="rank">Sort: rank</option>
+      <option value="tvl">Sort: TVL</option>
+      <option value="growth">Sort: 7-day growth</option>
+      <option value="age">Sort: age</option>
+    </select>
+    <span id="count" class="count"></span>
+  </div>
+  <div class="boardwrap">
+    <table id="board">
+      <thead><tr>
+        <th data-k="rank">#</th><th data-k="name">Protocol</th><th data-k="category">Category</th>
+        <th data-k="chains">Chains</th><th data-k="tvl_usd">TVL</th><th data-k="change_7d">7d</th>
+        <th data-k="age_days">Age</th><th data-k="implied_value_usd">Implied value</th><th>Multiple</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="note">Implied value is this board's own claim about what a token would be worth if the protocol's record stayed as it is. It is not a prediction that a token will be issued, or when. “Records no token” means the snapshot's data carries none — a protocol may still have one its record does not carry.</p>
+</section>
+
+<section id="view-method" class="view" hidden>
+  <h2>How the value is worked out</h2>
+  <p>Every multiple below comes from this snapshot itself — the median market-cap / TVL of the protocols in that category whose token already trades (only protocols with at least $1m of TVL count). A category with fewer than three such protocols uses the overall median instead. No protocol name is special-cased: the same formula scores every row.</p>
+  <p class="formula">implied&nbsp;=&nbsp;TVL&nbsp;×&nbsp;category&nbsp;multiple&nbsp;×&nbsp;growth&nbsp;×&nbsp;maturity&nbsp;×&nbsp;chains</p>
+  <ul class="legend">
+    <li><b>Growth</b> — 1 + (7-day TVL change, clamped to −60%…+120%) × 0.5. A protocol growing fast is worth more than a shrinking one at the same TVL.</li>
+    <li><b>Maturity</b> — 0.6 + min(age, 3 years) / 3 years × 0.4. A protocol that has run for years with no token has survived longer; one with no listed date counts as one year old.</li>
+    <li><b>Chains</b> — 1 + 0.02 per extra chain, up to 1.10. Being on more chains reaches more users.</li>
+    <li><b>Multiple</b> — clamped to 0.05…1.20, so one outlier category cannot produce an absurd value.</li>
+  </ul>
+  <h3>Calibrated multiples</h3>
+  <table id="cal" class="cal"><thead><tr><th>Category</th><th>Live protocols</th><th>Multiple</th></tr></thead><tbody></tbody></table>
+</section>
+
+<section id="view-live" class="view" hidden>
+  <h2>Already trading</h2>
+  <p>These protocols already have a token, so the board shows the market's own value for them — never a model's. They are set aside from the ranking on purpose: the radar exists to find what has not launched yet.</p>
+  <table id="livetab" class="cal"><thead><tr><th>Protocol</th><th>Category</th><th>TVL</th><th>Market cap</th><th>7d</th></tr></thead><tbody></tbody></table>
+</section>
+
+<aside id="detail" class="detail" hidden aria-label="Protocol detail"></aside>
+
+<footer><p>Token Radar · model radar-2 · Data: DefiLlama snapshot, sealed for this competition · Not investment advice.</p></footer>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
